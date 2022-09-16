@@ -1,5 +1,5 @@
 #I hate this but we're gonna make a call to globalVariables here to satisfy R cmd check.
-utils::globalVariables(c("from", ".", "i", "seed"))
+utils::globalVariables(c("from", ".", "i", "seed", "reference_df"))
 
 #' Plot subnetwork identified using the compute_crosstalk function
 #'
@@ -35,7 +35,11 @@ plot_ct <- function(crosstalk_df, g, label_prop = 0.1,
   }
 
   #make sure input is valid compute_crosstalk output
-  check_crosstalk(crosstalk_df = crosstalk_df)
+  is_ct <- check_crosstalk(crosstalk_df = crosstalk_df)
+
+  if(!is_ct) {
+    stop("Please provide the output of the compute_crosstalk function for crosstalk_df")
+  }
 
   crosstalk_df <- dplyr::slice_max(crosstalk_df,
                                    order_by = .data$affinity_score,
@@ -43,7 +47,7 @@ plot_ct <- function(crosstalk_df, g, label_prop = 0.1,
 
   #generate vector of seeds
   seeds_df <- dplyr::filter(crosstalk_df, .data$seed == "yes")
-  seed_proteins <- seeds_df$gene_id
+  seed_proteins <- seeds_df$node
 
   #make subgraph of g for a given crosstalk_df
   g_ct <- crosstalk_subgraph(crosstalk_df = crosstalk_df, g = g,
@@ -71,18 +75,15 @@ plot_ct <- function(crosstalk_df, g, label_prop = 0.1,
 #'
 
 check_crosstalk <- function(crosstalk_df) {
-  #make sure it is a dataframe
-  if(!is.data.frame(crosstalk_df)) {
-    stop("crosstalk_df must be a valid output of compute_crosstalk")
-  }
-
   #make sure columns match up
   target_cols = c("node", "mean_p", "var_p", "nobs", "seed",
                   "affinity_score", "Z", "p_value", "adj_p_value")
-
-  if(!all(target_cols %in% colnames(crosstalk_df))) {
-    stop("column names do not match what is expected")
+  #make sure it is a dataframe
+  if(!is.data.frame(crosstalk_df) & !all(target_cols %in% colnames(crosstalk_df))) {
+    return(FALSE)
   }
+
+  return(TRUE)
 
 }
 
@@ -110,7 +111,7 @@ crosstalk_subgraph <- function(crosstalk_df, g, seed_proteins) {
   check_crosstalk(crosstalk_df = crosstalk_df)
 
   #if g isn't an igraph object this will fly an error.
-  g <- igraph::induced_subgraph(g, v = crosstalk_df$gene_id)
+  g <- igraph::induced_subgraph(g, v = crosstalk_df$node)
 
   #we only want to keep edges that attach to a seed protein - is this really true?
   #seed_edges <- igraph::E(g)[ from(seed_proteins)]

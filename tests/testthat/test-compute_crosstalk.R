@@ -14,16 +14,24 @@ test_that("compute_crosstalk doesn't break for very small graphs", {
   expect_message(compute_crosstalk(c(1,3), g = g, use_ppi=FALSE))
   expect_true(is.data.frame(compute_crosstalk(c(1,3), g = g, use_ppi=FALSE, n=100)))
   expect_true(is.data.frame(compute_crosstalk(c(1), g = g, use_ppi=FALSE, n = 100)))
-  expect_null(check_crosstalk(compute_crosstalk(c(1), g = g, use_ppi=FALSE, n = 100)))
 })
 
-g <- igraph::sample_gnp(n = 1000, p = 10/1000)
+g <- igraph::sample_gnp(n = 1000, p = 300/1000)
 
 test_that("compute_crosstalk identifies crosstalkers for larger graphs", {
   expect_true(is.data.frame(compute_crosstalk(c(1,3,5,8,10), g = g, use_ppi = FALSE, n = 100)))
-  expect_null(check_crosstalk(compute_crosstalk(c(1), g = g, use_ppi=FALSE, n = 100)))
   expect_true(nrow(compute_crosstalk(c(1,3,5,8,10), g = g, use_ppi = FALSE, n = 100)) > 0)
   expect_message(compute_crosstalk(c(1,3), g = g, use_ppi=FALSE))
+})
+
+test_that("compute_crosstalk doesn't break when you provide invalid vertez names", {
+  expect_true(is.data.frame(compute_crosstalk(c(1,3,5,8,10, 1002), g = g, use_ppi = FALSE, n = 100)))
+})
+
+
+test_that("compute crosstalk works for non-human vertices", {
+  skip_if_offline()
+  expect_true(is.data.frame(compute_crosstalk("511145.b0003", species = 511145)))
 })
 
 
