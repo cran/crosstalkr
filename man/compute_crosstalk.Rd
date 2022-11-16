@@ -11,6 +11,8 @@ compute_crosstalk(
   ppi = "stringdb",
   species = "homo sapiens",
   n = 1000,
+  union = FALSE,
+  intersection = FALSE,
   gamma = 0.6,
   eps = 1e-10,
   tmax = 1000,
@@ -30,16 +32,20 @@ compute_crosstalk(
 
 \item{g}{igraph network object.}
 
-\item{use_ppi}{should g be a protein-protein interaction network? If
+\item{use_ppi}{bool, should g be a protein-protein interaction network? If
 false, user must provide an igraph object in \code{g}}
 
-\item{ppi}{character string describing the ppi to use: currently only "stringdb" is supported.}
+\item{ppi}{character string describing the ppi to use: currently only "stringdb" and "biogrid" are supported.}
 
 \item{species}{character string describing the species of interest.
 For a list of supported species, see \code{supported_species}.
 Non human species are only compatible with "stringdb"}
 
 \item{n}{number of random walks with repeats to create null distribution}
+
+\item{union}{bool, should we take the union of string db and biogrid to compute the PPI? Only applicable for the human PPI}
+
+\item{intersection}{bool, should we take the intersection of string db and biogrid to compute the PPI? Only applicable for the human PPI}
 
 \item{gamma}{restart probability}
 
@@ -84,7 +90,7 @@ for how to specify proteins
 \examples{
 \donttest{
 #1) easy to use for querying biological networks - n = 10000 is more appropriate for actual analyses
-compute_crosstalk(c("EGFR", "KRAS"), n =10)
+#compute_crosstalk(c("EGFR", "KRAS"), n =10)
 }
 #2) Also works for any other kind of graph- just specify g (must be igraph formatted as of now)
 g <- igraph::sample_gnp(n = 1000, p = 10/1000)
