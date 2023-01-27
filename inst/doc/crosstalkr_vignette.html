@@ -12,28 +12,40 @@
 
 
 
-<title>crosstalkr_vignette</title>
+<title>Using crosstalkr for drug target identification</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
 
 
 <style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
@@ -51,55 +63,54 @@ pre > code.sourceCode { white-space: pre-wrap; }
 pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-  { counter-reset: source-line 0; }
+{ counter-reset: source-line 0; }
 pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
+{ position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {   }
+{ }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -133,7 +144,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -145,14 +336,291 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<h1 class="title toc-ignore">crosstalkr_vignette</h1>
+<h1 class="title toc-ignore">Using crosstalkr for drug target
+identification</h1>
 
 
 
+<p>Here, We present two possible bioinformatic pipelines for drug target
+identification. Both rely on the integration of RNA or protein
+expression data from a given model system with interactomic data from
+protein-protein interaction networks. In the first, we execute a
+two-step pipeline, where the PPI network is filtered based on RNA
+expression data. We then rank the nodes again based on betweenness
+centrality to identify the most critical hub genes of the network. In
+the second, we use in-silico repression to rank the nodes rather than a
+simple node scoring method after a filtration step.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(crosstalkr)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#library(dnet)</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#g &lt;- prep_stringdb(cache = NULL, min_score = 100)</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#dnet::</span></span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#library(dnet)</span></span></code></pre></div>
+<div id="the-data" class="section level1">
+<h1>The Data</h1>
+<p>For this example, we will rely on previously published gene
+expression data from a Ewing Sarcoma cell line (A673). (described in
+more detail <a href="https://journals.plos.org/ploscompbiol/article/comments?id=10.1371/journal.pcbi.1008755">here</a>).
+Ewing Sarcoma is a rare bone malignancy primarily seen in pediatric and
+adolescent patients. We will first isolate the sample of interest and
+log2 normalize the gene expression values. Then we will format the
+expression values into a named numeric vector, the preferred format for
+interacting with the crosstalkr API. In the code below, we load a
+pre-computed PPI to save time but you can download directly from
+stringdb or Biogrid using the <code>load_ppi</code> method.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;https://github.com/DavisWeaver/disruptr/raw/main/inst/test_data/rld_Counts.csv&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Load PPI we will be using</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">url</span>(<span class="st">&quot;https://github.com/DavisWeaver/disruptr/blob/main/inst/test_data/stringdb.Rda?raw=true&quot;</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>g_ppi <span class="ot">&lt;-</span> g</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#To download directly from stringdb - see load_ppi()</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="dv">1</span>, <span class="st">&#39;5_A673_DMSO&#39;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">expression =</span> <span class="st">&#39;5_A673_DMSO&#39;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">&#39;gene_name&#39;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(expression <span class="sc">!=</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">expression =</span> <span class="fu">log2</span>(expression)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(expression))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>exp <span class="ot">&lt;-</span> df<span class="sc">$</span>expression</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(exp) <span class="ot">&lt;-</span> df<span class="sc">$</span>gene_name</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(df))</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 x 2</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   gene_name expression</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;          &lt;dbl&gt;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 A1BG            2.92</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 A1BG-AS1        2.88</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 A1CF           -1.28</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 A2M             2.21</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 A2ML1           2.97</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 A4GALT          2.84</span></span></code></pre></div>
+</div>
+<div id="pipeline-one" class="section level1">
+<h1>Pipeline One</h1>
+<div id="graph-filtering" class="section level2">
+<h2>Graph Filtering</h2>
+<p>First, we will use the gene expression values to reduce the size of
+the PPI network we need to analyze.</p>
+<p>Under the hood, the following steps will happen:</p>
+<ol style="list-style-type: decimal">
+<li>Download and modify PPI according to user-provided parameters
+(passed to <code>load_ppi</code>)</li>
+<li>Take the maximum or minimum 1000 genes according to the user
+provided named numeric vector (passed to the <code>val</code>
+parameter)</li>
+<li>Call the <code>igraph::induced_subgraph</code> method to create a
+new igraph object that contains only the genes from step 2.</li>
+<li>Add gene expression to the new graph object as an attribute to allow
+further manipulation.</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#start by getting the PPI since we don&#39;t want to download it twice</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">gfilter</span>(<span class="at">method =</span> <span class="st">&quot;value&quot;</span>, <span class="at">g=</span>g_ppi, <span class="at">cache =</span> <span class="cn">NULL</span>, <span class="at">val=</span>exp, <span class="at">val_name =</span> <span class="st">&quot;expression&quot;</span>, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">use_ppi =</span> <span class="cn">FALSE</span>, <span class="at">desc =</span> <span class="cn">TRUE</span>,<span class="at">n=</span><span class="dv">100</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(igraph<span class="sc">::</span><span class="fu">V</span>(g))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 100</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(igraph<span class="sc">::</span><span class="fu">get.vertex.attribute</span>(g, <span class="at">name =</span> <span class="st">&quot;expression&quot;</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 3.846040 3.961776 3.980389 3.843208 3.982157 3.955569</span></span></code></pre></div>
+</div>
+<div id="node-scoring" class="section level2">
+<h2>Node Scoring</h2>
+<p>Next, we’ll use gfilter again to score this smaller subgraph
+according to the betweenness centrality and return only the top 5
+proteins. It is worth noting that there are a number of potential
+measures of centrality that could be used here, as well as many other
+potentially useful node scoring methods provided in the
+<code>igraph</code> package.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">gfilter</span>(<span class="at">g=</span>g, <span class="at">igraph_method =</span> <span class="st">&quot;betweenness&quot;</span>, <span class="at">n =</span> <span class="dv">5</span>, <span class="at">desc=</span> <span class="cn">TRUE</span>, <span class="at">use_ppi=</span><span class="cn">FALSE</span>, <span class="at">val_name =</span> <span class="st">&quot;betweenness&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>igraph<span class="sc">::</span><span class="fu">V</span>(g)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + 5/5 vertices, named, from 4cc49cb:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] GAPDH    HSP90AA1 EEF1A1   HNRNPC   TPT1</span></span></code></pre></div>
+<p>As you can see, our not very thoughtful attempt at identifying drug
+targets in Ewing Sarcoma has turned up GAPDH, HSP90AA1, EEF1A1, HNRNPC,
+and TPT1 as the most likely candidates.</p>
+<p>GAPDH is a glycolytic enzyme that has also been assigned a number of
+other functions, and is highly expressed in normal bone marrow. HSP90AA1
+encodes for a heat shock protein and has been implicated in drug
+resistance development in cancer. EEF1A1 is involved in protein
+translation. HNRNPC is a ubiquitously expressed RNA binding protein.
+TPT1 is a regulator of cellular proliferation, and is causally
+implicated in cancer development.</p>
+<p>Of our 5 candidate proteins, 4 are either ubiquitously expressed
+housekeeping genes or proteins involved in the generic cellular stress
+response. Surprisingly, our very simple pipeline (applied to just a
+single sample) identified a potentially promising candidate in TPT1.
+TPT1 was even recently associated with Ewing Sarcoma drug resistance
+development in the literature.</p>
+</div>
+<div id="disease-specific-subnetwork-identification" class="section level2">
+<h2>Disease-Specific Subnetwork Identification</h2>
+<p>If we had a compelling reason to think these 5 genes were key
+regulators in Ewing Sarcoma, we could use the
+<code>compute_crosstalk</code> function to identify a Ewing Sarcoma
+specific subnetwork from the full protein-protein interaction
+network.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">gfilter.ct</span>(<span class="at">seeds =</span> <span class="fu">names</span>(igraph<span class="sc">::</span><span class="fu">V</span>(g)), <span class="at">g =</span> g_ppi, <span class="at">use_ppi =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">return_df=</span><span class="cn">TRUE</span>, <span class="at">cache =</span> <span class="cn">NULL</span>, <span class="at">seed_name =</span> <span class="st">&quot;vignette&quot;</span>, <span class="at">n =</span> <span class="dv">100</span>, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">agg_int=</span> <span class="dv">10</span>, <span class="at">ncores =</span> <span class="dv">1</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ct</span>(out[[<span class="dv">2</span>]], out[[<span class="dv">1</span>]], <span class="at">prop_keep=</span><span class="fl">0.2</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cdf <span class="ot">&lt;-</span> out[[<span class="dv">2</span>]] </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cdf <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>p_value, <span class="sc">-</span>nobs, <span class="sc">-</span>mean_p, <span class="sc">-</span>var_p) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(affinity_score, <span class="at">n=</span><span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">node</th>
+<th align="left">seed</th>
+<th align="right">affinity_score</th>
+<th align="right">Z</th>
+<th align="right">adj_p_value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">GAPDH</td>
+<td align="left">yes</td>
+<td align="right">0.122</td>
+<td align="right">647.574</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">EEF1A1</td>
+<td align="left">yes</td>
+<td align="right">0.122</td>
+<td align="right">689.910</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">HSP90AA1</td>
+<td align="left">yes</td>
+<td align="right">0.121</td>
+<td align="right">929.615</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">TPT1</td>
+<td align="left">yes</td>
+<td align="right">0.121</td>
+<td align="right">446.344</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">HNRNPC</td>
+<td align="left">yes</td>
+<td align="right">0.121</td>
+<td align="right">463.838</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">NUDCD2</td>
+<td align="left">no</td>
+<td align="right">0.049</td>
+<td align="right">929.615</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">TSSK6</td>
+<td align="left">no</td>
+<td align="right">0.049</td>
+<td align="right">929.615</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">RALYL</td>
+<td align="left">no</td>
+<td align="right">0.048</td>
+<td align="right">463.838</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">POTEF</td>
+<td align="left">no</td>
+<td align="right">0.025</td>
+<td align="right">389.294</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">TOMM34</td>
+<td align="left">no</td>
+<td align="right">0.024</td>
+<td align="right">394.899</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>We identified 341 proteins in the subnetwork defined by GAPDH,
+HSP90AA1, EEF1A1, HNRNPC, and TPT1. Next, we will re-analyze this data
+using a different combination of analytic steps to illustrate more
+features of crosstalkr.</p>
+</div>
+</div>
+<div id="pipeline-two" class="section level1">
+<h1>Pipeline Two</h1>
+<div id="graph-reduction" class="section level2">
+<h2>Graph Reduction</h2>
+<p>In this pipeline, we will reduce the graph two times, first using
+degree (number of neighbors for a given node), and then using gene
+expression. The resulting graph has 500 nodes, all with both high
+connectivity in the PPI network and high expression in our Ewing Sarcoma
+cell line. There are 9624 edges (interactions) between these 500 nodes
+(proteins).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">gfilter</span>(<span class="at">g =</span> g_ppi, <span class="at">use_ppi=</span><span class="cn">FALSE</span>, <span class="at">cache =</span> <span class="cn">NULL</span>, <span class="at">n =</span> <span class="dv">2000</span>, <span class="at">igraph_method =</span> igraph<span class="sc">::</span>degree, <span class="at">val_name =</span> <span class="st">&quot;degree&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">gfilter</span>(<span class="at">g=</span>g, <span class="at">use_ppi =</span> <span class="cn">FALSE</span>, <span class="at">n =</span> <span class="dv">500</span>, <span class="at">method =</span> <span class="st">&quot;val&quot;</span>, <span class="at">val_name =</span> <span class="st">&quot;expression&quot;</span>, <span class="at">val =</span> exp)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>igraph<span class="sc">::</span><span class="fu">gsize</span>(g)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 9624</span></span></code></pre></div>
+</div>
+<div id="node-scoring-1" class="section level2">
+<h2>Node Scoring</h2>
+<p>Next, we will demonstrate a method for node scoring that uses
+in-silico repression. In our context, in-silico repression refers to a
+6-step process:</p>
+<ol style="list-style-type: decimal">
+<li>Calculation of a node score <span class="math inline">\(s\)</span>
+for all nodes in the graph using some state function.</li>
+<li>Calculation of the total network state <span class="math inline">\(S
+=\sum\limits_is_i\)</span></li>
+<li>Removal of a given node <span class="math inline">\(v\)</span> from
+the graph.</li>
+<li>Re-calculation of node score <span class="math inline">\(s_v\)</span> for all nodes. (In practice, we only
+re-calculate the node score of those nodes affected by the removal of
+node v)</li>
+<li>Re-calculation of total network state <span class="math inline">\(S_v = \sum\limits_is_{vi}\)</span></li>
+<li>Calculation of <span class="math inline">\(\Delta S_v = S -
+S_v\)</span> where <span class="math inline">\(\Delta S_v\)</span> is
+used to score and rank nodes.</li>
+</ol>
+<p>For this example, we will use network potential as the state function
+(described <a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008755">here</a>)<br />
+The resulting data structure is sparse matrix that shows the effect of
+removing the node in a given column on the state function value for the
+node represented in a given row. The global effect of removing a given
+node is then the column sum.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dnp <span class="ot">&lt;-</span> <span class="fu">node_repression</span>(<span class="at">g=</span>g, <span class="at">v_rm =</span> <span class="fu">names</span>(igraph<span class="sc">::</span><span class="fu">V</span>(g)), <span class="at">exp =</span> exp)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dnp <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">colSums</span>(dnp)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>dnp <span class="ot">&lt;-</span> <span class="fu">sort</span>(dnp, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dnp)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;HSP90AA1&quot; &quot;RPS27A&quot;   &quot;UBA52&quot;    &quot;CDK1&quot;     &quot;CCNB1&quot;</span></span></code></pre></div>
+<p>Using this modified pipeline, we identified HSP90AA1, RPS27A, UBA52,
+CDK1, and CCNB1 as the most likely targets for therapy in this Ewing
+Sarcoma cell line. HSP90AA1 was also identified in the first instance.
+RPS27A is a ribosomal protein that is involved in RNA binding. UBA52 is
+a paralog of RPS27A and appears to be an unlikely candidate for cancer
+therapy. CDK1 is a cyclin dependent kinase, involved in cellular
+proliferation and causally associated with cancer in the literature.
+CCNB1 is a cyclin, a cellular regulator of mitosis. As with the method
+above, our bioinformatic pipeline identified a number of ubiquitiously
+expressed housekeeping genes as well as one or two proteins that are
+likely to be cancer-specific.</p>
+<p>It is possible to modify these types of analysis to reduce the
+likelihood of finding heavily connected proteins that are involved in
+the generic stress response. For example, we could compute a null
+distribution for our state function of interest by generating hundreds
+or thousands of rewired graphs with preserved degree and then
+re-calculating our metric of interest. We support this capability for
+the network potential example (see compute_null_dnp). Supporting this
+feature for additional state functions is an area of development.</p>
+</div>
+</div>
 
 
 

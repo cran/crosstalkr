@@ -7,6 +7,7 @@
 #' @param min_score minimum connectivity score for each edge in the network.
 #' @param version stringdb version
 #' @param species species code either using latin species name or taxon id
+#' @param network_type str "full" or "physical" - physical returns only interactions from protein complexes
 #' @return igraph object built from the adjacency matrix downloaded from stringdb.
 #'
 #' @importFrom rlang .data
@@ -14,8 +15,9 @@
 
 prep_stringdb <- function(cache = NULL,
                           edb = "default",
-                          min_score = 0,
-                          version = "11.5", species = "homo sapiens"){
+                          min_score = 200,
+                          version = "11.5", species = "homo sapiens",
+                          network_type = "full"){
   #clean up params
   if(is.numeric(version)) {version <- as.character(version)}
   #if they provide a character version of taxon id just convert to numeric
@@ -34,7 +36,8 @@ prep_stringdb <- function(cache = NULL,
     message(paste0("Downloading stringdb ", species, " v", version))
 
     df <- STRINGdb::STRINGdb$new(version = version, species = species,
-                                 score_threshold = min_score)
+                                 score_threshold = min_score,
+                                 network_type = network_type)
     g <- try(df$get_graph())
     if(inherits(df, "try-error")) {
       stop("unable to download stringdb, please try again later")
@@ -148,12 +151,43 @@ ppi_union <- function(cache = NULL, min_score = 0, edb = "default") {
 #'
 #' @export
 
-ppi_intersection <- function(cache = NULL, min_score = 0, edb = "default") {
+ppi_intersection <- function(cache = NULL, min_score = 800, edb = "default") {
   g_biogrid <- prep_biogrid(cache = cache)
   g_string <- prep_stringdb(cache = cache, edb = edb, min_score = min_score)
   g <- igraph::intersection(g_biogrid, g_string)
   return(g)
 }
+
+#' Helper function to load requested PPI w/ parameters
+#'
+#' @inheritParams prep_stringdb
+#'
+#' @param union bool
+#' @param intersection bool
+#' @param ppi str
+#'
+#' @export
+#'
+#' @returns igraph object
+
+load_ppi <- function(cache=NULL, union = FALSE, intersection = FALSE,
+                     species = "9606", min_score=0, ppi= "stringdb",
+                     network_type = "full") {
+  if(union & (tolower(species) == "homo sapiens" | as.character(species) == "9606")) {
+    g <- ppi_union(cache = cache, min_score = min_score)
+  } else if(intersection & (tolower(species) == "homo sapiens" | as.character(species) == "9606")) {
+    g <- ppi_intersection(cache = cache, min_score = min_score)
+  } else if(ppi == "biogrid" & (tolower(species) == "homo sapiens" | as.character(species) == "9606")) { #first 3 options are only feasible if the species is human
+    g <- prep_biogrid(cache = cache)
+  } else if (ppi == "stringdb") {
+    g <- prep_stringdb(cache = cache, min_score = min_score, species = species,
+                       network_type=network_type)
+  } else {
+    stop("ppi must be either 'biogrid' or 'stringdb'")
+  }
+  return(g)
+}
+
 
 
 #' helper to convert user-inputs to ncbi reference taxonomy.
@@ -176,7 +210,7 @@ to_taxon_id <- function(species) {
                             .data$string_name == species |
                               .data$ncbi_name == species) %>%
     dplyr::rename(taxon_id = "#taxon_id") %>%
-    dplyr::select(.data$taxon_id) %>%
+    dplyr::select("taxon_id") %>%
     unlist()
 
   if(is.na(taxon_id[1])) {
