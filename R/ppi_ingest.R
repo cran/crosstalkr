@@ -7,7 +7,6 @@
 #' @param min_score minimum connectivity score for each edge in the network.
 #' @param version stringdb version
 #' @param species species code either using latin species name or taxon id
-#' @param network_type str "full" or "physical" - physical returns only interactions from protein complexes
 #' @return igraph object built from the adjacency matrix downloaded from stringdb.
 #'
 #' @importFrom rlang .data
@@ -16,8 +15,7 @@
 prep_stringdb <- function(cache = NULL,
                           edb = "default",
                           min_score = 200,
-                          version = "11.5", species = "homo sapiens",
-                          network_type = "full"){
+                          version = "11.5", species = "homo sapiens"){
   #clean up params
   if(is.numeric(version)) {version <- as.character(version)}
   #if they provide a character version of taxon id just convert to numeric
@@ -36,8 +34,7 @@ prep_stringdb <- function(cache = NULL,
     message(paste0("Downloading stringdb ", species, " v", version))
 
     df <- STRINGdb::STRINGdb$new(version = version, species = species,
-                                 score_threshold = min_score,
-                                 network_type = network_type)
+                                 score_threshold = min_score)
     g <- try(df$get_graph())
     if(inherits(df, "try-error")) {
       stop("unable to download stringdb, please try again later")
@@ -89,20 +86,20 @@ prep_biogrid <- function(cache = NULL) {
     tmp <- tempdir()
 
     #Download most recent version of the biogrid
-    message("Downloading biogrid version 3.5.171")
-    download.file("https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-3.5.171/BIOGRID-ORGANISM-3.5.171.tab2.zip",
+    message("Downloading biogrid version 4.4.217")
+    download.file("https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.217/BIOGRID-ORGANISM-4.4.217.tab2.zip",
                   destfile = paste0(tmp, "/biogrid.zip"))
 
     #Unzip only the homosapiens portion of the biogrid zip file and delete big zip file
     unzip(paste0(tmp, '/biogrid.zip'),
-          files = c("BIOGRID-ORGANISM-Homo_sapiens-3.5.171.tab2.txt"),
+          files = c("BIOGRID-ORGANISM-Homo_sapiens-4.4.217.tab2.txt"),
           exdir = paste0(tmp, "/unzip"))
     file.remove(paste0(tmp, "/biogrid.zip"))
 
     #Read in biogrid file from temp directory.
     biogrid <-
       try(read.delim(
-        paste0(tmp, "/unzip/BIOGRID-ORGANISM-Homo_sapiens-3.5.171.tab2.txt"),
+        paste0(tmp, "/unzip/BIOGRID-ORGANISM-Homo_sapiens-4.4.217.tab2.txt"),
         header = TRUE
       ))
     if(inherits(biogrid, "try-error")) {
@@ -171,8 +168,7 @@ ppi_intersection <- function(cache = NULL, min_score = 800, edb = "default") {
 #' @returns igraph object
 
 load_ppi <- function(cache=NULL, union = FALSE, intersection = FALSE,
-                     species = "9606", min_score=0, ppi= "stringdb",
-                     network_type = "full") {
+                     species = "9606", min_score=0, ppi= "stringdb") {
   if(union & (tolower(species) == "homo sapiens" | as.character(species) == "9606")) {
     g <- ppi_union(cache = cache, min_score = min_score)
   } else if(intersection & (tolower(species) == "homo sapiens" | as.character(species) == "9606")) {
@@ -180,8 +176,7 @@ load_ppi <- function(cache=NULL, union = FALSE, intersection = FALSE,
   } else if(ppi == "biogrid" & (tolower(species) == "homo sapiens" | as.character(species) == "9606")) { #first 3 options are only feasible if the species is human
     g <- prep_biogrid(cache = cache)
   } else if (ppi == "stringdb") {
-    g <- prep_stringdb(cache = cache, min_score = min_score, species = species,
-                       network_type=network_type)
+    g <- prep_stringdb(cache = cache, min_score = min_score, species = species)
   } else {
     stop("ppi must be either 'biogrid' or 'stringdb'")
   }
