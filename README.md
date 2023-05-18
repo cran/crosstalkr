@@ -3,8 +3,6 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/DavisWeaver/crosstalkr/workflows/R-CMD-check/badge.svg)](https://github.com/DavisWeaver/crosstalkr/actions)
 [![Codecov test coverage](https://codecov.io/gh/DavisWeaver/crosstalkr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/DavisWeaver/crosstalkr?branch=main)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7347687.svg)](https://doi.org/10.5281/zenodo.7347687)
-
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 [![CRAN version](http://www.r-pkg.org/badges/version/crosstalkr)](https://CRAN.R-project.org/package=crosstalkr)
@@ -35,7 +33,7 @@ Node values can be provided by the user (as in `gfilter.value`).
 Users can also specify any method found in the `igraph` package that generates node values (i.e. `igraph::degree` or `igraph::betweenness`).
 We also provide a custom method for node ranking that we developed in our lab, termed network potential (`gfilter.np`)
 Crosstalkr provides a general implementation of a random-walk with restarts on graph structured data. 
-We also provide user-friendly implementations of the common use-case of using random-walk with restarts to identify subnetworks of biological protein-protein interaction databases. 
+We also provide user-friendly implementations of the common use-case of using random-walk with restarts to identify subnetworks of biological protein-protein interaction databases (adapted from the method described here - https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000639). 
 Given a user-defined set of seed proteins, the main `compute_crosstalk` function will compute affinity scores for all other proteins in the network. 
 It will then compute a null distribution using a permutation test and compare the computed affinity scores to the null distribution to identify proteins with a statistically significant association to the user-defined seed-proteins.
 
@@ -46,9 +44,6 @@ Users must specify a state function that scores nodes. Each node in `v_rm`, will
 The provide state function will be applied to re-calculate network state and then the difference in total state value (sum of all nodes) will be computed. 
 
 See https://journals.plos.org/ploscompbiol/article/comments?id=10.1371/journal.pcbi.1008755 for more details on in-silico repression. 
-
-## Other functionality
-
 
 # Use
 
@@ -94,7 +89,7 @@ A more detailed overview of the available functionality is provided in the intro
 vignette(package = "crosstalkr")
 ```
 
-Please use the provided Zenodo DOI to cite. 
+Please use the provided biorxiv pre-print to cite. https://www.biorxiv.org/content/10.1101/2023.03.07.531526v1
 
 # Contact
 

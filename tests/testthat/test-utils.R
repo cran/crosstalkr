@@ -8,11 +8,13 @@ entrez_test <- c(79854, 148398, 26155, 84069, 57801, 9636,
                  54991, 254173, 8784)
 
 test_that("as_gene_symbol converts ensemble ids to gene_symbol", {
+  skip_if_offline()
   expect_equal(length(as_gene_symbol(ensembl_test)), length(ensembl_test))
   expect_equal(as_gene_symbol(ensembl_test), c("ARF5", "CALM2", "GART", "ARHGEF9"))
 })
 
 test_that("as_gene_symbol converts entrez ids to gene_symbol", {
+  skip_if_offline()
   expect_equal(length(as_gene_symbol(entrez_test)), length(entrez_test))
   expect_equal(as_gene_symbol(entrez_test), c("LINC00115",
                                               "SAMD11",
@@ -38,10 +40,24 @@ test_that("is_entrez returns true for entrez_ids and false otherwise", {
 })
 
 
-test_that("entrez_type correctly identifies the type of entrez_id provided", {
+test_that("ensembl_type correctly identifies the type of ensembl_id provided", {
   expect_equal(ensembl_type(ensembl_test), "PROTEINID")
   expect_equal(ensembl_type("9606.ENST00000000233"), "TRANSCRIPTID")
   expect_equal(ensembl_type("9606.ENSG00000000233"), "GENEID")
   expect_error(ensembl_type("ARF5"))
   expect_error(ensembl_type(1234))
+})
+
+test_that("we return an equal length vector for the problematic set of entrez_ids", {
+  skip("relies on installed data")
+  load(system.file("test_data/entrez_break.Rda", package = "crosstalkr"))
+  genes <- as_gene_symbol(busted_entrez_vec)
+  expect_equal(length(busted_entrez_vec), length(genes))
+})
+
+test_that("we return an equal length vector for the problematic set of ensembl genes", {
+  skip("relies on installed data")
+  load(system.file("test_data/ex_ensembl_vec.Rda", package = "crosstalkr"))
+  genes <- as_gene_symbol(samples)
+  expect_equal(length(samples), length(genes))
 })

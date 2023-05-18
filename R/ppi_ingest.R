@@ -22,7 +22,7 @@ prep_stringdb <- function(cache = NULL,
   if(is.character(species) & !grepl("\\D", species)) {species <- as.numeric(species)}
   #if they didn't provide an edb object
   if(edb == "default") {
-    edb <- EnsDb.Hsapiens.v79::EnsDb.Hsapiens.v79
+    edb <- EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86
   }
   if(!is.numeric(species)) {
     species = to_taxon_id(species)
@@ -230,8 +230,8 @@ supported_species <- function() {
   } else {
     df <- readr::read_tsv(file = "https://stringdb-static.org/download/species.v11.5.txt")
     df <- dplyr::filter(df, .data$STRING_type == "core")
-    reference_df <- dplyr::rename(df, string_name = .data$STRING_name_compact,
-                                  ncbi_name = .data$official_name_NCBI) %>%
+    reference_df <- dplyr::rename(df, string_name = "STRING_name_compact",
+                                  ncbi_name = "official_name_NCBI") %>%
       dplyr::mutate(string_name = stringr::str_to_lower(.data$string_name),
                     ncbi_name = stringr::str_to_lower(.data$ncbi_name))
   }

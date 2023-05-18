@@ -11,8 +11,14 @@ library(crosstalkr)
 library(dplyr)
 #library(dnet)
 
-## ----load_data, warning = FALSE, message = FALSE------------------------------
-df <- readr::read_csv(file = "https://github.com/DavisWeaver/disruptr/raw/main/inst/test_data/rld_Counts.csv")
+## ----load_data, warning = FALSE, message = FALSE, include = FALSE-------------
+
+df <- try(readr::read_csv(file = "https://github.com/DavisWeaver/disruptr/raw/main/inst/test_data/rld_Counts.csv"))
+if(inherits(df, "try-error")) {
+  knitr::knit_exit() #just put
+}
+
+## ----load_more_data, warning = FALSE, message = FALSE-------------------------
 #Load PPI we will be using
 load(url("https://github.com/DavisWeaver/disruptr/blob/main/inst/test_data/stringdb.Rda?raw=true"))
 g_ppi <- g
