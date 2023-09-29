@@ -1,7 +1,7 @@
 Package: crosstalkr
 Title: Analysis of Graph-Structured Data with a Focus on
         Protein-Protein Interaction Networks
-Version: 1.0.3
+Version: 1.0.4
 Authors@R: 
     person(given = "Davis",
            family = "Weaver",
@@ -23,8 +23,8 @@ Config/testthat/edition: 2
 VignetteBuilder: knitr
 Depends: R (>= 2.10)
 NeedsCompilation: yes
-Packaged: 2023-07-05 23:01:32 UTC; dtw43
+Packaged: 2023-09-29 17:18:43 UTC; dtw43
 Author: Davis Weaver [aut, cre] (0000-0003-3086-497X)
 Maintainer: Davis Weaver <davis.weaver@case.edu>
 Repository: CRAN
-Date/Publication: 2023-07-05 23:23:12 UTC
+Date/Publication: 2023-09-29 17:40:02 UTC

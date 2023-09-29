@@ -1,10 +1,10 @@
-5d2473f11b872148f80e7d874f3cfaf0 *DESCRIPTION
+d8d389ea0f39a84e16b02cb4f96c6184 *DESCRIPTION
 a55c4fc03a54cb061ed2df5f5afc8c29 *NAMESPACE
 0020311ca5f86fd6e9fbe49ef2ec7954 *R/RandomWalkRepeats.R
 cfb86a87b337f3d28d72a7f204c72955 *R/RcppExports.R
 71877f9e71ad7bedfe8ed7125b42d93c *R/calc_np.R
 9b248c4d1874aec65ad826909b9e1045 *R/create_null.R
-70584299c815671f06b3c0167ae6b97e *R/crosstalkr-package.R
+2c81e541d93eae3da2fe0b60989f4e31 *R/crosstalkr-package.R
 7e74632cc140ab5c89224bbc0abdc3df *R/filter.R
 9fda500aa5319bade74f071adabba063 *R/node_suppression.R
 afdb9d7743cd252057aedc5b45099558 *R/np_pipeline.R
@@ -15,7 +15,7 @@ afdb9d7743cd252057aedc5b45099558 *R/np_pipeline.R
 c847ec8756288f07aa6db297f62b5216 *build/vignette.rds
 a1db7690ccbd0db37f6abee29a19e135 *inst/doc/crosstalkr_vignette.R
 003ff39393142e52504edce0cd1b7533 *inst/doc/crosstalkr_vignette.Rmd
-0595b9cd52489a4d1bde3fa415a84613 *inst/doc/crosstalkr_vignette.html
+14e0ae394beccd8333315e48b9166e89 *inst/doc/crosstalkr_vignette.html
 21563fc90a71c72492260609b3d4f1d0 *man/add_expression.Rd
 ccb458c6627d16691a71d4b59c63107e *man/add_value.Rd
 f1e33d58c3787607bc9aabab839d79a5 *man/as_gene_symbol.Rd
