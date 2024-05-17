@@ -1,4 +1,4 @@
-d8d389ea0f39a84e16b02cb4f96c6184 *DESCRIPTION
+4da72f2e9ad3a11585026f9fe1e9b29f *DESCRIPTION
 a55c4fc03a54cb061ed2df5f5afc8c29 *NAMESPACE
 0020311ca5f86fd6e9fbe49ef2ec7954 *R/RandomWalkRepeats.R
 cfb86a87b337f3d28d72a7f204c72955 *R/RcppExports.R
@@ -15,7 +15,7 @@ afdb9d7743cd252057aedc5b45099558 *R/np_pipeline.R
 c847ec8756288f07aa6db297f62b5216 *build/vignette.rds
 a1db7690ccbd0db37f6abee29a19e135 *inst/doc/crosstalkr_vignette.R
 003ff39393142e52504edce0cd1b7533 *inst/doc/crosstalkr_vignette.Rmd
-14e0ae394beccd8333315e48b9166e89 *inst/doc/crosstalkr_vignette.html
+e6506c8e067f3d9f03e8ebc2c014ace3 *inst/doc/crosstalkr_vignette.html
 21563fc90a71c72492260609b3d4f1d0 *man/add_expression.Rd
 ccb458c6627d16691a71d4b59c63107e *man/add_value.Rd
 f1e33d58c3787607bc9aabab839d79a5 *man/as_gene_symbol.Rd
@@ -68,7 +68,7 @@ f17ace16a91bc701c58ea54fb30bc317 *src/RcppExports.cpp
 4ebdd96221784988ae2b7162bba978df *tests/testthat.R
 7d719e76b441613327c426a18782eaee *tests/testthat/test-RandomWalkRepeats.R
 a11b655238664cd78c6859d20fdb6ae4 *tests/testthat/test-calc_np.R
-bec3430b088fccbd97cdb5783262ae30 *tests/testthat/test-create_null.R
+595a964939aa6e5e0772be5f3ae260cf *tests/testthat/test-create_null.R
 6e0ea9f8603d1994d4f95fefcd537ded *tests/testthat/test-filter.R
 e46575a1ed9d566617b230530f4588c8 *tests/testthat/test-node_suppression.R
 b0e18a5ff1ce8e640f2be2534ee4ad53 *tests/testthat/test-plot.R
